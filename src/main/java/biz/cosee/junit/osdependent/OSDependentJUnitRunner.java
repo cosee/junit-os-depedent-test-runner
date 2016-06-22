@@ -9,17 +9,21 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
+/**
+ * OSDependentJUnitRunner determines the Operation System on load time of the class and performs all test methods
+ * having whether no {@link Platform} annotation present or a matching operation system.
+ */
 public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
 
-    private static Platform thisMachinesPlatform;
+    private static Platform currentPlatform;
 
     static {
         String osName = System.getProperty("os.name").toLowerCase();
 
         if (osName.toLowerCase().contains("linux")) {
-            thisMachinesPlatform = Platform.LINUX;
+            currentPlatform = Platform.LINUX;
         } else {
-            thisMachinesPlatform = Platform.OTHER;
+            currentPlatform = Platform.OTHER;
         }
     }
 
@@ -34,7 +38,7 @@ public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
             runIgnored(eachNotifier);
         } else {
             DependsOnPlatform dependsOnPlatform = method.getAnnotation(DependsOnPlatform.class);
-            if (dependsOnPlatform != null && dependsOnPlatform.value() != thisMachinesPlatform) {
+            if ((dependsOnPlatform != null) && (dependsOnPlatform.value() != currentPlatform)) {
                 runIgnored(eachNotifier);
                 return;
             }
@@ -42,7 +46,6 @@ public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    // copy of BlockJUnit4ClassRunner#runNotIgnored
     private void runNotIgnored(FrameworkMethod method, EachTestNotifier eachNotifier) {
         eachNotifier.fireTestStarted();
         try {
@@ -56,12 +59,10 @@ public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
         }
     }
 
-    // copy of BlockJUnit4ClassRunner#runIgnored
     private void runIgnored(EachTestNotifier eachNotifier) {
         eachNotifier.fireTestIgnored();
     }
 
-    // copy of BlockJUnit4ClassRunner#makeNotifier
     private EachTestNotifier makeNotifier(FrameworkMethod method, RunNotifier notifier) {
         Description description = describeChild(method);
         return new EachTestNotifier(notifier, description);
