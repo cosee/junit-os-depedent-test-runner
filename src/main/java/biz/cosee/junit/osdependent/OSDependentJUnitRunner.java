@@ -15,20 +15,21 @@ import org.junit.runners.model.InitializationError;
  */
 public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
 
-    private static Platform currentPlatform = Platform.OTHER;
-
-    static {
-        String osName = System.getProperty("os.name").toLowerCase();
-
-        for (Platform platform : Platform.values()) {
-            if ((platform.javaOsNameExpression != null) && (osName.contains(platform.javaOsNameExpression))) {
-                currentPlatform = platform;
-            }
-        }
-    }
+    private static Platform currentPlatform = determineCurrentPlatform();
 
     public OSDependentJUnitRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+    }
+
+    private static Platform determineCurrentPlatform() {
+        String osNameInLowerCase = System.getProperty("os.name").toLowerCase();
+
+        for (Platform platform : Platform.values()) {
+            if ((platform.javaOsNameExpression != null) && (osNameInLowerCase.contains(platform.javaOsNameExpression))) {
+                return platform;
+            }
+        }
+        return Platform.OTHER;
     }
 
     @Override
