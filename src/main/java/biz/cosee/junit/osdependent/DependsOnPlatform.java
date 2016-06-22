@@ -6,5 +6,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 public @interface DependsOnPlatform {
-    Platform platform();
+    Platform value();
 }
