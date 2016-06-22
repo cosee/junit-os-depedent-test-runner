@@ -20,8 +20,12 @@ public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
     static {
         String osName = System.getProperty("os.name").toLowerCase();
 
-        if (osName.toLowerCase().contains("linux")) {
+        if (osName.contains("linux")) {
             currentPlatform = Platform.LINUX;
+        } else if (osName.contains("mac os")) {
+            currentPlatform = Platform.UNIX;
+        } else if (osName.contains("windows")) {
+            currentPlatform = Platform.WINDOWS;
         } else {
             currentPlatform = Platform.OTHER;
         }
