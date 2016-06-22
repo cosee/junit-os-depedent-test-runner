@@ -33,6 +33,12 @@ public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
+    public void run(RunNotifier notifier) {
+        notifier.addListener(new NotMatchingOSMessagePrinter(currentPlatform));
+        super.run(notifier);
+    }
+
+    @Override
     protected void runChild(FrameworkMethod method, RunNotifier notifier) {
         EachTestNotifier eachNotifier = makeNotifier(method, notifier);
         if (method.getAnnotation(Ignore.class) != null) {
