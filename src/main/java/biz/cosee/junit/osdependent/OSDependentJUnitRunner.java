@@ -47,9 +47,9 @@ public class OSDependentJUnitRunner extends BlockJUnit4ClassRunner {
             DependsOnPlatform dependsOnPlatform = method.getAnnotation(DependsOnPlatform.class);
             if ((dependsOnPlatform != null) && (dependsOnPlatform.value() != currentPlatform)) {
                 runIgnored(eachNotifier);
-                return;
+            } else {
+                runNotIgnored(method, eachNotifier);
             }
-            runNotIgnored(method, eachNotifier);
         }
     }
 
